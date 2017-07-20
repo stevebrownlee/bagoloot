@@ -9,7 +9,33 @@ namespace BagOLoot
         public static void Main(string[] args)
         {
             var db = new DatabaseInterface();
-            db.Check();
+            db.CheckChildTable();
+            db.CheckToyTable();
+
+            // Choice will hold the number entered by the user
+            // after main menu ws displayed
+            int choice;
+
+            do
+            {
+                // Show the main menu
+                choice = menu.ShowMainMenu();
+
+                switch (choice)
+                {
+                    // Menu option 1: Adding fish
+                    case 1:
+                        AddFish.DoAction(store, myAquarium);
+                        break;
+
+                    // Menu option 2: Removing fish
+                    case 2:
+                        RemoveFish.DoAction(myAquarium);
+                        break;
+                }
+            } while (choice != 3);
+
+
 
             Console.WriteLine ("WELCOME TO THE BAG O' LOOT SYSTEM");
             Console.WriteLine ("*********************************");

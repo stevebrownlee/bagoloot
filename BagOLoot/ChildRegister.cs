@@ -7,59 +7,50 @@ namespace BagOLoot
 {
     public class ChildRegister
     {
-        private List<string> _children = new List<string>();
-        private string _connectionString = $"Data Source={Environment.GetEnvironmentVariable("BAGOLOOT_DB")}";
-        private SqliteConnection _connection;
+        private List<Child> _children = new List<Child>();
+        private DatabaseInterface _db = new DatabaseInterface();
 
         public ChildRegister()
         {
-            _connection = new SqliteConnection(_connectionString);
         }
 
-        public bool AddChild (string child) 
+        public int AddChild (string child) 
         {
-            int _lastId = 0; // Will store the id of the last inserted record
-            using (_connection)
-            {
-                _connection.Open ();
-                SqliteCommand dbcmd = _connection.CreateCommand ();
+            _db.Change( $"insert into child values (null, '{child}', 0)");
 
-                // Insert the new child
-                dbcmd.CommandText = $"insert into child values (null, '{child}', 0)";
-                Console.WriteLine(dbcmd.CommandText);
-                dbcmd.ExecuteNonQuery ();
+            int lastChild = 0;
 
-                // Get the id of the new row
-                dbcmd.CommandText = $"select last_insert_rowid()";
-                using (SqliteDataReader dr = dbcmd.ExecuteReader()) 
-                {
-                    if (dr.Read()) {
-                        _lastId = dr.GetInt32(0);
-                    } else {
-                        throw new Exception("Unable to insert value");
+            _db.Query("select last_insert_rowid()",
+                (SqliteDataReader reader) => {
+                    while (reader.Read ())
+                    {
+                        lastChild = reader.GetInt32(0);
                     }
                 }
-
-                // clean up
-                dbcmd.Dispose ();
-                _connection.Close ();
-            }
-
-            return _lastId != 0;
+            );
+            return lastChild;
         }
 
-        public List<string> GetChildren ()
+        public List<Child> GetChildren ()
         {
-            return new List<string>();
+            _db.Query("select id, name, delivered from child",
+                (SqliteDataReader reader) => {
+                    _children.Clear();
+                    while (reader.Read ())
+                    {
+                        _children.Add(new Child(){
+                            id = reader.GetInt32(0),
+                            name = reader[1].ToString(),
+                            delivered = reader.GetInt32(2) == 1
+                        });
+                    }
+                }
+            );
+
+            return _children;
         }
 
-        public string GetChild (string name)
-        {
-            var child = _children.SingleOrDefault(c => c == name);
+        public Child GetChild (int id) =>  _children.SingleOrDefault(kid => kid.id == id);
 
-            // Inevitably, two children will have the same name. Then what?
-
-            return child;
-        }
     }
 }
