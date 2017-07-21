@@ -8,27 +8,28 @@ namespace BagOLoot
     public class ChildRegister
     {
         private List<Child> _children = new List<Child>();
-        private DatabaseInterface _db = new DatabaseInterface();
+        private DatabaseInterface _db;
 
-        public ChildRegister()
+        public ChildRegister(DatabaseInterface db)
         {
+            _db = db;
         }
 
         public int AddChild (string child) 
         {
-            _db.Change( $"insert into child values (null, '{child}', 0)");
+            int id = _db.Insert( $"insert into child values (null, '{child}', 0)");
 
-            int lastChild = 0;
 
-            _db.Query("select last_insert_rowid()",
-                (SqliteDataReader reader) => {
-                    while (reader.Read ())
-                    {
-                        lastChild = reader.GetInt32(0);
-                    }
+            _children.Add(
+                new Child()
+                {
+                    id = id,
+                    name = child,
+                    delivered = false
                 }
             );
-            return lastChild;
+
+            return id;
         }
 
         public List<Child> GetChildren ()
