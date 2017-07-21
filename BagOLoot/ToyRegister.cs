@@ -29,5 +29,15 @@ namespace BagOLoot
 
       return newToy;
     }
+
+    public void RevokeToy(Child kid, Toy toy)
+    {
+
+    }
+
+    public List<Toy> GetToysForChild(Child kid)
+    {
+      return new List<Toy>();
+    }
   }
 }
