@@ -28,14 +28,14 @@ namespace BagOLoot
 
                 switch (choice)
                 {
-                    // Menu option 1: Adding fish
+                    // Menu option 1: Adding child
                     case 1:
                         CreateChild.DoAction(book);
                         break;
 
-                    // Menu option 2: Removing fish
+                    // Menu option 2: Adding toy
                     case 2:
-                        AddToy.DoAction(bag, book, db);
+                        AddToy.DoAction(bag, book);
                         break;
                 }
             } while (choice != 3);

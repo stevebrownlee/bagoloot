@@ -6,7 +6,7 @@ namespace BagOLoot.Actions
 {
   public class AddToy
   {
-    public static void DoAction(ToyRegister bag, ChildRegister book, DatabaseInterface db)
+    public static void DoAction(ToyRegister bag, ChildRegister book)
     {
       Console.Clear();
       Console.WriteLine ("Choose child");
