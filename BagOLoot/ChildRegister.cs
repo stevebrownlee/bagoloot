@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using BagOLoot.Data;
 using Microsoft.Data.Sqlite;
 
 namespace BagOLoot
@@ -15,7 +16,7 @@ namespace BagOLoot
             _db = db;
         }
 
-        public int AddChild (string child) 
+        public int AddChild (string child)
         {
             int id = _db.Insert( $"insert into child values (null, '{child}', 0)");
 

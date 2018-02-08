@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-
+using BagOLoot.Data;
 
 namespace BagOLoot.Actions
 {
@@ -20,7 +20,7 @@ namespace BagOLoot.Actions
       Console.Write ("> ");
       string childName = Console.ReadLine();
       Child kid = book.GetChild(int.Parse(childName));
-      
+
       Console.WriteLine ("Enter toy");
       Console.Write ("> ");
       string toyName = Console.ReadLine();

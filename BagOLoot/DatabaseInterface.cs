@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Data.Sqlite;
 using System.Collections;
+using BagOLoot.Data;
+using Dapper;
 
 namespace BagOLoot
 {
@@ -11,6 +13,16 @@ namespace BagOLoot
     {
         private string _connectionString;
         private SqliteConnection _connection;
+
+        public static SqliteConnection Connection
+        {
+            get
+            {
+                string env = $"{Environment.GetEnvironmentVariable("BAGOLOOT_DB")}";
+                string _connectionString = $"Data Source={env}";
+                return new SqliteConnection(_connectionString);
+            }
+        }
 
         public DatabaseInterface(string database)
         {
@@ -24,10 +36,11 @@ namespace BagOLoot
             using (_connection)
             {
                 _connection.Open ();
+
                 SqliteCommand dbcmd = _connection.CreateCommand ();
                 dbcmd.CommandText = command;
 
-                using (SqliteDataReader dataReader = dbcmd.ExecuteReader()) 
+                using (SqliteDataReader dataReader = dbcmd.ExecuteReader())
                 {
                     handler (dataReader);
                 }
@@ -44,7 +57,7 @@ namespace BagOLoot
                 _connection.Open ();
                 SqliteCommand dbcmd = _connection.CreateCommand ();
                 dbcmd.CommandText = command;
-                
+
                 dbcmd.ExecuteNonQuery ();
 
                 dbcmd.Dispose ();
@@ -61,7 +74,7 @@ namespace BagOLoot
                 _connection.Open ();
                 SqliteCommand dbcmd = _connection.CreateCommand ();
                 dbcmd.CommandText = command;
-                
+
                 dbcmd.ExecuteNonQuery ();
 
                 this.Query("select last_insert_rowid()",
@@ -103,7 +116,7 @@ namespace BagOLoot
                     {
                         dbcmd.CommandText = $@"create table child (
                             `id`	integer NOT NULL PRIMARY KEY AUTOINCREMENT,
-                            `name`	varchar(80) not null, 
+                            `name`	varchar(80) not null,
                             `delivered` integer not null default 0
                         )";
                         try
@@ -144,7 +157,7 @@ namespace BagOLoot
                     {
                         dbcmd.CommandText = $@"create table toy (
                             `id`	integer NOT NULL PRIMARY KEY AUTOINCREMENT,
-                            `name`	varchar(80) not null, 
+                            `name`	varchar(80) not null,
                             `childId` integer not null,
                             FOREIGN KEY(`childId`) REFERENCES `child`(`id`)
                         )";

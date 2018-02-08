@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using BagOLoot.Actions;
+using BagOLoot.Data;
 
 namespace BagOLoot
 {
@@ -14,8 +15,13 @@ namespace BagOLoot
             db.CheckToyTable();
 
             MainMenu menu = new MainMenu();
+
+
+
+
             ChildRegister book = new ChildRegister(db);
-            ToyRegister bag = new ToyRegister(db);
+            ToyRegister bag = new ToyRegister();
+
 
             // Choice will hold the number entered by the user
             // after main menu ws displayed
